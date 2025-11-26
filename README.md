@@ -1,0 +1,2 @@
+# NitroSocks
+A protocol
