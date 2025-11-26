@@ -8,20 +8,34 @@
 
 ```mermaid
 sequenceDiagram
-  客户端->>服务器: TLS握手
-  服务器->>客户端:
-  服务器->>客户端: NS挑战[公钥(TokenTemp)]
-  客户端->>服务器: NS响应[TokenTemp(Token)]
-  服务器->>客户端: NS结果[公钥(Token(会话密钥))]
-  客户端-->服务器:
-  客户端->>服务器: NS载荷[会话密钥(有效载荷)]
-  服务器->>客户端:...
-  服务器-->客户端:
-  客户端->>服务器: NS释放通知[空]
-  服务器->>客户端: NS确认[会话密钥(随机字符串)]
-  客户端->>服务器: NS确认[随机字符串(会话密钥)]
-  客户端->>服务器: TLS/TCP释放
-  服务器->>客户端:
+  participant C as Client
+  participant S as Server
+
+  Note over C,S: 阶段1: TLS连接 + 版本协商
+  C->>S: TLS 1.3 Handshake
+  C->>S: NS Version_Negotiation[支持的协议版本列表]
+  S->>C: NS Version_Selected[选择的版本+加密套件]
+  
+  Note over C,S: 阶段2: 增强的前向安全密钥交换
+  S->>C: NS Challenge[ServerEphemeralPub, Nonce_S, Timestamp, Sign(ServerCert)]
+  C->>S: NS Response[ClientEphemeralPub, Nonce_C, TokenTemp(Token, Nonce_S)]
+  
+  Note over C,S: 阶段3: 会话建立与确认
+  S->>C: NS Result[SessionKey_Info, MAC(所有握手消息)]
+  C->>S: NS Finish[MAC(所有握手消息)]
+  
+  Note over C,S: 阶段4: 安全数据传输
+  loop 周期性密钥轮换
+    C->>S: NS Data[NewSessionKey(CurrentSessionKey(Payload))]
+    S->>C: NS Data[CurrentSessionKey(Payload)]
+  end
+  
+  Note over C,S: 阶段5: 安全连接终止
+  C->>S: NS Release_Request[Nonce_R, MAC]
+  S->>C: NS Release_Challenge[RandomString, Nonce_R+1]
+  C->>S: NS Release_Confirm[MAC(RandomString)]
+  C->>S: TLS/TCP Close
+  S->>C: TLS/TCP Close
 ```
 
 ## 数据包结构
