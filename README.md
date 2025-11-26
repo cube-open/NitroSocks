@@ -2,6 +2,8 @@
 
 A protocol designed to provide end-to-end security verification under untrusted TLS, rendering man-in-the-middle interception meaningless or prohibitively costly.
 
+Now you are in **EN_US**|[**ZH_CN**](./zhcn.md)
+
 ## Protocol Flow
 
 ```mermaid
