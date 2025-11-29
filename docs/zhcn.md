@@ -1,6 +1,6 @@
 # NitroSocks
 
-一个旨在在不可信TLS环境下提供高安全性的端到端验证的隧道协议，使得中间人截获无效或破解难度过高。
+一个旨在在不可信TLS环境下，基于TCP-TLS提供高安全性的抗中间人攻击，端到端验证的`L7`隧道协议，使得中间人截获无效或破解难度过高，强制`AES-128-GCM/AES-256-GC`M加密数据包以在可观测未来内提供抗量子的安全性。
 
 ## 协议流程
 
@@ -18,7 +18,7 @@ sequenceDiagram
     
     Note over C,S: 阶段2: 服务器主动发起挑战
     C-->>M: 一个无效发包，可选，用于协议混淆。
-    S->>M: 服务器挑战发包[PublicKey('R1.TokenTemp')]
+    S->>M: 服务器挑战发包[PublicKey('R1.TokenTemp.encryptType')]
     M->>C: 转发(无法识别为协议)
     
     Note over C,S: 阶段3: 客户端解密并响应
