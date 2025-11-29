@@ -1,6 +1,6 @@
 # NitroSocks
 
-一个旨在在不可信TLS环境下提供端到端安全验证的协议，使中间人拦截变得无意义或成本过高。
+一个旨在在不可信TLS环境下提供高安全性的端到端验证的隧道协议，使得中间人截获无效或破解难度过高。
 
 现在您在**ZH_CN**|[**EN_US**](./README.md)
 
@@ -11,10 +11,8 @@ sequenceDiagram
   participant C as Client
   participant S as Server
 
-  Note over C,S: 阶段1: TLS连接 + 版本协商
+  Note over C,S: 阶段1: TLS连接建立
   C->>S: TLS 1.3 Handshake
-  C->>S: NS Version_Negotiation[支持的协议版本列表]
-  S->>C: NS Version_Selected[选择的版本+加密套件]
   
   Note over C,S: 阶段2: 增强的前向安全密钥交换
   S->>C: NS Challenge[ServerEphemeralPub, Nonce_S, Timestamp, Sign(ServerCert)]
